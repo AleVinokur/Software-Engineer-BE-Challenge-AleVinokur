@@ -1,83 +1,55 @@
-# Challenge Técnico Backend - COR
+# Cadena de Palabras Circular
 
-¡Hola! Gracias por tu interés en formar parte de nuestro equipo.
-
-Este challenge está diseñado para darnos una idea de tus habilidades para resolver problemas, tu estilo de codificación y tu enfoque arquitectónico. No buscamos una única "respuesta correcta", sino entender tu proceso de pensamiento.
-
-¡Mucha suerte!
+Resolver el problema como si fuese un dominó de palabras: cada palabra debe “encastrar” con la siguiente (última letra = primera letra), y la última debe volver a la primera para **cerrar el círculo**. Si no hay forma, el resultado es un archivo vacío.
 
 ---
 
-## El Desafío: La Cadena de Palabras Circular
+## Enfoque y decisiones
 
-Tu tarea es implementar una función o método que, dada una lista de palabras, encuentre un ordenamiento que permita formar un círculo y lo devuelva como resultado.
+- **Mapeo rápido de letras.**  
+  Primero leo/limpio las palabras del archivo y, por cada una, guardo su **primera** y **última** letra (usando funciones multibyte para UTF-8). Así sé enseguida qué palabra puede seguir a otra.
 
-Una lista de palabras forma un círculo si la última letra de cada palabra es igual a la primera letra de la siguiente, y la última letra de la última palabra es igual a la primera letra de la primera palabra. Cada palabra debe usarse exactamente una vez.
+- **Barrido greedy con dos punteros (`i`, `k`).**  
+  `i` marca la palabra actual; `k` busca hacia adelante una que **empiece** con la letra que necesito (la última de `i`). Cuando la encuentro, la acerco **in-place** (por ejemplo con `array_splice`) para evitar estructuras intermedias y mantener el resto del orden estable. Sigo avanzando.
 
-**Input:** Un archivo `.txt` que contenga una lista de palabras (una palabra por línea).
+- **Rotaciones para evitar sesgo del orden inicial.**  
+  Si ese punto de partida no funciona, **roto** la lista (muevo la primera al final) y repito. Pruebo diferentes comienzos hasta que se arma el círculo o se descartan todas las rotaciones.
 
-**Output:** Un archivo `.txt` que contenga la secuencia de palabras que forman el círculo, con **una palabra por línea**. Si no es posible formar un círculo, el archivo de salida debe estar vacío.
+- **Verificación de cierre.**  
+  Antes de devolver el resultado confirmo que la **última** palabra también conecte con la **primera**; si no, paso a la siguiente rotación disponible.
 
-### Ejemplo:
+### Complejidad
+- **Tiempo:** O(n²) en el peor caso (barrido + reubicaciones).  
+- **Memoria:** O(n) (arreglos paralelos; sin estructuras adicionales pesadas).
 
-**Archivo de entrada (`input.txt`):**
-```
-chair
-height
-racket
-touch
-tunic
-```
-
-**Archivo de salida (`output.txt`):**
-```
-chair
-racket
-touch
-height
-tunic
-```
-*(Nota: Cualquier orden circular válido es una respuesta correcta)*
-
-**Archivo de entrada (`input.txt`):**
-```
-apple
-banana
-```
-
-**Archivo de salida (`output.txt`):** *(archivo vacío)*
+> **Nota:** Entiendo que es enfoque prioriza simplicidad y costo. Para casos con un gran número de palabras entiendo que podría usarse un modelo de grafo para garantizar solución cuando existe. Se que existen algoritmos más eficientes para resolver este problema.
 
 ---
 
-## Requerimientos
+## Requisitos
+- Docker
+- Docker Compose
 
-### Funcionales
-- La solución debe leer las palabras desde un archivo `.txt` de entrada.
-- La solución debe escribir el resultado en un archivo `.txt` de salida.
-- Si no existe una solución, el archivo de salida debe estar vacío.
+## Puesta en marcha
+1. Construí y levantá el servicio:
+   ```bash
+   docker-compose up --build -d
+   ```
+2. Ingresá al contenedor:
+   ```bash
+   docker exec -it circular-word-chain sh
+   ```
+3. Ejecutá la aplicación desde el contenedor:
+   ```bash
+   php run.php
+   ```
+   - Sin argumentos usa `/app/input.txt` y escribe en `/app/output.txt`.
 
-### No Funcionales
+   Opcionalmente puedes especificar la ruta del archivo de entrada y salida: 
+   ```bash
+   php run.php [ruta_input] [ruta_output]
+   ```
+4. Editá `input.txt` para probar nuevas combinaciones; el volumen está montado y podés relanzar `php run.php` desde el contenedor cuando quieras.
 
-- **Lenguaje:** Puedes resolver el challenge en **Node.js (JavaScript/TypeScript), PHP o Python**.
-
----
-
-
-## Entregables
-
-1.  El código fuente de tu solución.
-2.  Un archivo `README.md` (puedes modificar este mismo) con:
-    -   Una breve explicación de tu enfoque y las decisiones que tomaste.
-    -   Instrucciones claras sobre cómo instalar dependencias y ejecutar la solución y las pruebas.
-
-Por favor, comparte tu solución subiéndola a un repositorio de Git y envíanos el enlace.
-
----
-
-## Aclaraciones
--   Si existe más de un círculo posible, devolver cualquiera de ellos es correcto.
--   Asume que todas las palabras vendrán en minúsculas y no habrá strings vacíos en la lista.
-
-Si tienes alguna pregunta, no dudes en contactarnos.
-
-**¡Estamos ansiosos por ver tu solución!**
+## Notas adicionales
+- La lógica del círculo está en `src/CircularWordChain.php`; `src/FileHandler.php` gestiona lectura y escritura de archivos.

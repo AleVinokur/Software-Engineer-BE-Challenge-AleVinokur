@@ -1,0 +1,22 @@
+{
+    "name": "alevinokur/circular-word-chain",
+    "description": "Challenge Técnico Backend - COR: Cadena de Palabras Circular",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alejandro Vinokur"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "run": "php run.php"
+    }
+}
