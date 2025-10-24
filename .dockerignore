@@ -1,0 +1,7 @@
+.git
+.gitignore
+README.md
+vendor/
+output.txt
+.DS_Store
+*.log
