@@ -39,7 +39,11 @@ Resolver el problema como si fuese un dominó de palabras: cada palabra debe “
    ```bash
    docker exec -it circular-word-chain sh
    ```
-3. Ejecutá la aplicación desde el contenedor:
+3. Instala las dependencias:
+   ```bash
+   composer install
+   ```
+4. Ejecutá la aplicación desde el contenedor:
    ```bash
    php run.php
    ```
@@ -49,7 +53,7 @@ Resolver el problema como si fuese un dominó de palabras: cada palabra debe “
    ```bash
    php run.php [ruta_input] [ruta_output]
    ```
-4. Editá `input.txt` para probar nuevas combinaciones; el volumen está montado y podés relanzar `php run.php` desde el contenedor cuando quieras.
+5. Editá `input.txt` para probar nuevas combinaciones; el volumen está montado y podés relanzar `php run.php` desde el contenedor cuando quieras.
 
 ## Notas adicionales
 - La lógica del círculo está en `src/CircularWordChain.php`; `src/FileHandler.php` gestiona lectura y escritura de archivos.
